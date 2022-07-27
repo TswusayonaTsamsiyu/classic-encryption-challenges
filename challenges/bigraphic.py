@@ -1,12 +1,14 @@
 from string import ascii_uppercase
-from more_itertools import chunked, flatten
+from more_itertools import chunked, flatten, unzip
 
 from .challenge import register_challenge
 
-_ORDERED_PAIRS = ["".join((a, b)) for a in ascii_uppercase for b in ascii_uppercase]
-_SHUFFLED_PAIRS = list(flatten(zip(*chunked(_ORDERED_PAIRS, 4))))
+from .utils.general import pairs, join_chars
 
-_ENCRYPT_MAP = {pair: _SHUFFLED_PAIRS[index] for index, pair in enumerate(_ORDERED_PAIRS)}
+_ORDERED_PAIRS = list(map(join_chars, pairs(ascii_uppercase)))
+_SHUFFLED_PAIRS = list(flatten(unzip(chunked(_ORDERED_PAIRS, 4))))
+
+_ENCRYPT_MAP = dict(zip(_ORDERED_PAIRS, _SHUFFLED_PAIRS))
 
 
 def encrypt(plain: str) -> str:
